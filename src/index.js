@@ -13,8 +13,22 @@ const publicdire = path.join(__dirname,'../public')
 
 app.use(express.static(publicdire))
 
-io.on('connection',()=>{
+let count=0
+
+io.on('connection',(socket)=>{
     console.log('new websocket')
+
+    socket.emit('message','welcome')
+    socket.broadcast.emit('message',"a new user has joined")
+
+    socket.on('sendMessage',(message)=>{
+        io.emit('message',message)
+    })
+
+    socket.on('disconnect',()=>{
+        io.emit('message',"A user has left the chat")
+    })
+    
 })
 
 server.listen(port,()=>{

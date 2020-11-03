@@ -1,3 +1,5 @@
+//const messages = require("../../src/utils/messages")
+
 const socket = io()
 
 const $messageForm = document.querySelector('#message-form')
@@ -13,7 +15,8 @@ const locationmessageTemplate = document.querySelector("#locationmessage-templat
 socket.on('message',(message)=>{
     console.log(message)
     const html = Mustache.render(messageTemplate,{
-        message
+        message:message.text,
+        createdAt: moment(messages.createdAt).format('h:mm a')
     })
     $messages.insertAdjacentHTML('beforeend',html)
 })
@@ -36,11 +39,12 @@ document.querySelector("#message-form").addEventListener("submit",(e)=>{
     })
 })
 
-socket.on('locationmessage',(url)=>{
-    console.log(url)
+socket.on('locationmessage',(message)=>{
+    //console.log(url)
     const html = Mustache.render(locationmessageTemplate,{
-        url
-    })
+        url:message.url,
+        createdAt: moment(messages.createdAt).format('h:mm a')
+        })
     $messages.insertAdjacentHTML('beforeend',html)
 })
 

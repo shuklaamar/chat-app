@@ -7,6 +7,8 @@ const $location = document.querySelector("#location")
 const $messages = document.querySelector('#messages')
 
 const messageTemplate = document.querySelector("#message-template").innerHTML
+const locationmessageTemplate = document.querySelector("#locationmessage-template").innerHTML
+
 
 socket.on('message',(message)=>{
     console.log(message)
@@ -32,6 +34,14 @@ document.querySelector("#message-form").addEventListener("submit",(e)=>{
         if(error) return console.log(error)
         console.log("delivered")
     })
+})
+
+socket.on('locationmessage',(url)=>{
+    console.log(url)
+    const html = Mustache.render(locationmessageTemplate,{
+        url
+    })
+    $messages.insertAdjacentHTML('beforeend',html)
 })
 
 $location.addEventListener('click',()=>{

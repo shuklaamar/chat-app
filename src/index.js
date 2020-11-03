@@ -2,6 +2,7 @@ const express = require("express")
 const path = require("path")
 const http = require('http')
 const socketio = require("socket.io")
+const filter = require('bad-words')
 
 const app = express()
 const server = http.createServer(app)
@@ -21,8 +22,20 @@ io.on('connection',(socket)=>{
     socket.emit('message','welcome')
     socket.broadcast.emit('message',"a new user has joined")
 
-    socket.on('sendMessage',(message)=>{
+    socket.on('sendMessage',(message,callback)=>{
+        const Filter = new filter()
+
+        if(Filter.isProfane(message)){
+            return callback('profenaty not allowed')
+        }
+
         io.emit('message',message)
+        callback()
+    })
+
+    socket.on('location',(coords,callback)=>{
+        io.emit('message',`https://google.com/maps?q=${coords.latitude},${coords. longittude}`)
+        callback()
     })
 
     socket.on('disconnect',()=>{
